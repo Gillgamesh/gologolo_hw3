@@ -9,7 +9,7 @@ var GraphQLInt = require('graphql').GraphQLInt;
 var GraphQLDate = require('graphql-date');
 var LogoModel = require('../models/Logo');
 
-var logoType = new GraphQLObjectType({
+const logoTypeConfig = {
     name: 'logo',
     fields: function () {
         return {
@@ -19,18 +19,47 @@ var logoType = new GraphQLObjectType({
             text: {
                 type: GraphQLString
             },
-            color: {
-                type: GraphQLString
-            },
             fontSize: {
                 type: GraphQLInt
             },
+            borderRadius: {
+                type: GraphQLInt
+            },
+            borderThickness: {
+                type: GraphQLInt
+            },
+            padding: {
+                type: GraphQLInt
+            },
+            margin: {
+                type: GraphQLInt
+            },
+            color: {
+                type: GraphQLString
+            },
+            borderColor: {
+                type: GraphQLString
+            },
+            backgroundColor: {
+                type: GraphQLString
+            },
             lastUpdate: {
                 type: GraphQLDate
-            }
+            },
         }
     }
-});
+}
+const { _id, lastUpdate, ...updateFields } = Object.fromEntries(
+    Object.entries(logoTypeConfig.fields()).map(
+        ([k, v]) => [
+            k,
+            {
+                type: new GraphQLNonNull(v.type)
+            }
+        ]
+    )
+)
+var logoType = new GraphQLObjectType(logoTypeConfig);
 
 var queryType = new GraphQLObjectType({
     name: 'Query',
@@ -72,24 +101,25 @@ var mutation = new GraphQLObjectType({
         return {
             addLogo: {
                 type: logoType,
-                args: {
-                    text: {
-                        type: new GraphQLNonNull(GraphQLString)
-                    },
-                    color: {
-                        type: new GraphQLNonNull(GraphQLString)
-                    },
-                    fontSize: {
-                        type: new GraphQLNonNull(GraphQLInt)
-                    }
-                },
+                // args: {
+                //     text: {
+                //         type: new GraphQLNonNull(GraphQLString)
+                //     },
+                //     color: {
+                //         type: new GraphQLNonNull(GraphQLString)
+                //     },
+                //     fontSize: {
+                //         type: new GraphQLNonNull(GraphQLInt)
+                //     }
+                // },
+                args: updateFields,
                 resolve: function (root, params) {
                     const logoModel = new LogoModel(params);
                     const newLogo = logoModel.save();
                     if (!newLogo) {
                         throw new Error('Error');
                     }
-                    return newLogo
+                    return newLogo;
                 }
             },
             updateLogo: {
@@ -99,18 +129,13 @@ var mutation = new GraphQLObjectType({
                         name: 'id',
                         type: new GraphQLNonNull(GraphQLString)
                     },
-                    text: {
-                        type: new GraphQLNonNull(GraphQLString)
-                    },
-                    color: {
-                        type: new GraphQLNonNull(GraphQLString)
-                    },
-                    fontSize: {
-                        type: new GraphQLNonNull(GraphQLInt)
-                    }
+                    ...updateFields, 
                 },
                 resolve(root, params) {
-                    return LogoModel.findByIdAndUpdate(params.id, { text: params.text, color: params.color, fontSize: params.fontSize, lastUpdate: new Date() }, function (err) {
+                    return LogoModel.findByIdAndUpdate(
+                        params.id, 
+                        { ...params, lastUpdate: new Date() }, 
+                        function (err) {
                         if (err) return next(err);
                     });
                 }
