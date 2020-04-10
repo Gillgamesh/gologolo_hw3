@@ -1,68 +1,89 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Gologolo 2, 2 Electric Boogaloo
 
-## Available Scripts
+## Queries:
 
-In the project directory, you can run:
+* `allLogos` : Returns List\[logo\] for all logos
+* `logo(id)` : Returns a single logo, or null if id not matched
 
-### `yarn start`
+```graphql
+query allLogos {
+  logos {
+    _id
+    fontSize
+    text
+    borderColor
+    borderThickness
+    margin
+    padding
+    borderRadius
+    backgroundColor
+    color
+  }
+}
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# try changing id to one from allLogos:
+# (if using a new database)
+query getOne {
+  logo (id: "5e8f73a718f34c0aee14d94e") {
+    _id
+    text
+    fontSize
+  }
+}
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```
 
-### `yarn test`
+## Mutations:
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+An example of props can be gotten from looking at the schema on GraphiQL, or matching to the examples given below
 
-### `yarn build`
+* `addLogo(...props)` : Returns List\[logo\] for all logos in the database
+* `updateLogo(id, ...props)` : Returns a single logo, or null if id not matched
+* `removeLogo(id)` Deletes the logo with the given ID, and returns the logo fields pre-deletion
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```gql
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+mutation makeNew {
+  addLogo(
+    text: "fortnit2e"
+    color:"#000fff"
+    borderColor: "#000080"
+    backgroundColor: "#007000"
+    borderRadius: 34
+    borderThickness: 34
+    fontSize: 4
+    padding: 100
+    margin: 100
+  ) {
+    _id
+    text
+  }
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
+mutation update($id: String!) {
+  updateLogo(
+    id: $id
+    text: "fortnit1e"
+    color:"#000fff"
+    borderColor: "#000080"
+    backgroundColor: "#007900"
+    borderRadius: 34
+    borderThickness: 34
+    fontSize: 0
+    padding: 100
+    margin: 100
+  ) {
+    backgroundColor
+    borderRadius
+  }
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+mutation delete($id: String!) {
+  removeLogo(id: $id) {
+    _id
+    text
+    borderColor
+  }
+}
+```
