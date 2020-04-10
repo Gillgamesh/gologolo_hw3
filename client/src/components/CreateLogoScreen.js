@@ -2,20 +2,8 @@ import React, { Component } from 'react';
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { Link } from 'react-router-dom';
+import {ADD_LOGO} from '../queries';
 
-const ADD_LOGO = gql`
-    mutation AddLogo(
-        $text: String!,
-        $color: String!,
-        $fontSize: Int!) {
-        addLogo(
-            text: $text,
-            color: $color,
-            fontSize: $fontSize) {
-            _id
-        }
-    }
-`;
 
 class CreateLogoScreen extends Component {
 

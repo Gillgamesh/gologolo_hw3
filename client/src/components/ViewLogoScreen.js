@@ -1,28 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
-import gql from 'graphql-tag';
 import { Query, Mutation } from 'react-apollo';
+import {GET_LOGO, DELETE_LOGO} from '../queries';
 
-const GET_LOGO = gql`
-    query logo($logoId: String) {
-        logo(id: $logoId) {
-            _id
-            text
-            color
-            fontSize
-            lastUpdate
-        }
-    }
-`;
-
-const DELETE_LOGO = gql`
-  mutation removeLogo($id: String!) {
-    removeLogo(id:$id) {
-      _id
-    }
-  }
-`;
+import TextWorkspace from './TextWorkspace';
 
 class ViewLogoScreen extends Component {
 
@@ -43,32 +25,43 @@ class ViewLogoScreen extends Component {
                                     </h3>
                                 </div>
                                 <div className="panel-body">
-                                    <dl>
-                                        <dt>Text:</dt>
-                                        <dd>{data.logo.text}</dd>
-                                        <dt>Color:</dt>
-                                        <dd>{data.logo.color}</dd>
-                                        <dt>Font Size:</dt>
-                                        <dd>{data.logo.fontSize}</dd>
-                                        <dt>Last Updated:</dt>
-                                        <dd>{data.logo.lastUpdate}</dd>
-                                    </dl>
-                                    <Mutation mutation={DELETE_LOGO} key={data.logo._id} onCompleted={() => this.props.history.push('/')}>
-                                        {(removeLogo, { loading, error }) => (
-                                            <div>
-                                                <form
-                                                    onSubmit={e => {
-                                                        e.preventDefault();
-                                                        removeLogo({ variables: { id: data.logo._id } });
-                                                    }}>
-                                                    <Link to={`/edit/${data.logo._id}`} className="btn btn-success">Edit</Link>&nbsp;
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-4">
+                                                <dl>
+                                                    <dt>Text:</dt>
+                                                    <dd>{data.logo.text}</dd>
+                                                    <dt>Color:</dt>
+                                                    <dd>{data.logo.color}</dd>
+                                                    <dt>Font Size:</dt>
+                                                    <dd>{data.logo.fontSize}</dd>
+                                                    <dt>Last Updated:</dt>
+                                                    <dd>{data.logo.lastUpdate}</dd>
+                                                </dl>
+                                                <Mutation mutation={DELETE_LOGO} key={data.logo._id} onCompleted={() => this.props.history.push('/')}>
+                                                    {(removeLogo, { loading, error }) => (
+                                                        <div>
+                                                            <form
+                                                                onSubmit={e => {
+                                                                    e.preventDefault();
+                                                                    removeLogo({ variables: { id: data.logo._id } });
+                                                                }}>
+                                                                <Link to={`/edit/${data.logo._id}`} className="btn btn-success">Edit</Link>&nbsp;
                                                 <button type="submit" className="btn btn-danger">Delete</button>
-                                                </form>
-                                                {loading && <p>Loading...</p>}
-                                                {error && <p>Error :( Please try again</p>}
+                                                            </form>
+                                                            {loading && <p>Loading...</p>}
+                                                            {error && <p>Error :( Please try again</p>}
+                                                        </div>
+                                                    )}
+                                                </Mutation>
                                             </div>
-                                        )}
-                                    </Mutation>
+                                            <div classname="col-8">
+                                                <TextWorkspace
+                                                    logo={data.logo}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -2,36 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
+import {GET_LOGO, UPDATE_LOGO} from '../queries';
+import LogoEditor from './LogoEditor';
 
-const GET_LOGO = gql`
-    query logo($logoId: String) {
-        logo(id: $logoId) {
-            _id
-            text
-            color
-            fontSize
-        }
-    }
-`;
-
-const UPDATE_LOGO = gql`
-    mutation updateLogo(
-        $id: String!,
-        $text: String!,
-        $color: String!,
-        $fontSize: Int!) {
-            updateLogo(
-                id: $id,
-                text: $text,
-                color: $color,
-                fontSize: $fontSize) {
-                    lastUpdate
-                }
-        }
-`;
 
 class EditLogoScreen extends Component {
-
     render() {
         let text, color, fontSize;
         return (
@@ -52,41 +27,24 @@ class EditLogoScreen extends Component {
                                         </h3>
                                         </div>
                                         <div className="panel-body">                                            
-                                            <form onSubmit={e => {
-                                                e.preventDefault();
-                                                updateLogo({ variables: { id: data.logo._id, text: text.value, color: color.value, fontSize: parseInt(fontSize.value) } });
-                                                text.value = "";
-                                                color.value = "";
-                                                fontSize.value = "";
-                                            }}>
-                                                <div className="form-group">
-                                                    <label htmlFor="text">Text:</label>
-                                                    <input type="text" className="form-control" name="text" ref={node => {
-                                                        text = node;
-                                                    }} placeholder="Text" defaultValue={data.logo.text} />
+                                            <div className="panel-body">
+                                                <div className="container">
+                                                    {loading && <p>Loading...</p>}
+                                                    {error && <p>Error :( Please try again)</p>}
+                                                    <LogoEditor
+                                                        logo={data.logo}
+                                                        submit={(newLogo) => {
+                                                            updateLogo({ variables: { ...newLogo } })
+                                                        }}
+                                                    />
                                                 </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="color">Color:</label>
-                                                    <input type="color" className="form-control" name="color" ref={node => {
-                                                        color = node;
-                                                    }} placeholder="Color" defaultValue={data.logo.color} />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="fontSize">Font Size:</label>
-                                                    <input type="text" className="form-control" name="fontSize" ref={node => {
-                                                        fontSize = node;
-                                                    }} placeholder="Font Size" defaultValue={data.logo.fontSize} />
-                                                </div>
-                                                <button type="submit" className="btn btn-success">Submit</button>
-                                            </form>
-                                            {loading && <p>Loading...</p>}
-                                            {error && <p>Error :( Please try again</p>}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             )}
                         </Mutation>
-                    );
+                            );
                 }}
             </Query>
         );

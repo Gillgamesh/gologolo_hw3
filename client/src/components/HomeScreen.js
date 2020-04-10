@@ -3,16 +3,8 @@ import { Link } from 'react-router-dom';
 import '../App.css';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import {GET_LOGOS} from '../queries';
 
-const GET_LOGOS = gql`
-  {
-    logos {
-      _id
-      text
-      lastUpdate
-    }
-  }
-`;
 
 class HomeScreen extends Component {
 
