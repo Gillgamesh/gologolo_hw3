@@ -16,7 +16,7 @@ class HomeScreen extends Component {
                     if (error) return `Error! ${error.message}`;
 
                     return (
-                        <div className="container row">
+                        <div className="container row" style={{marginTop: "50px"}}>
                             <div className="col s4">
                                 <h3>Recent Work</h3>
                                 {data.logos.map((logo, index) => (
@@ -28,11 +28,12 @@ class HomeScreen extends Component {
                             </div>
                             <div className="col s8">
                                 <div id="home_banner_container">
-                                    @todo<br />
-                                    List Maker
+                                    GoLogoLo<br />
+                                    Logo Maker
                                 </div>
                                 <div>
-                                    <Link id="add_logo_button" to="/create">Add Logo</Link>
+                                    <br/>
+                                    <Link id="add_logo_button" to="/create" className="btn btn-success">Add Logo</Link>
                                 </div>
                             </div>
                         </div>

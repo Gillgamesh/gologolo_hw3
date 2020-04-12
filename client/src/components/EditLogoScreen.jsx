@@ -2,21 +2,30 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
-import {GET_LOGO, UPDATE_LOGO} from '../queries';
+import {GET_LOGO, UPDATE_LOGO, GET_LOGOS} from '../queries';
 import LogoEditor from './LogoEditor';
 
 
 class EditLogoScreen extends Component {
     render() {
-        let text, color, fontSize;
         return (
-            <Query query={GET_LOGO} variables={{ logoId: this.props.match.params.id }}>
+            <Query query={GET_LOGO} variables={{ id: this.props.match.params.id }}>
                 {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
 
                     return (
-                        <Mutation mutation={UPDATE_LOGO} key={data.logo._id} onCompleted={() => this.props.history.push(`/`)}>
+                        <Mutation
+                            mutation={UPDATE_LOGO}
+                            key={data.logo._id}
+                            onCompleted={() => this.props.history.push(`/`)}
+                            refetchQueries={()=> 
+                                [
+                                    { query: GET_LOGOS },
+                                    { query: GET_LOGO, variables: { id: data.logo._id } }
+                                ]
+                            }
+                        >
                             {(updateLogo, { loading, error }) => (
                                 <div className="container">
                                     <div className="panel panel-default">

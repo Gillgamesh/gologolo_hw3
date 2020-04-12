@@ -1,20 +1,38 @@
 import React, { Component, Fragment} from 'react';
 import { Link } from 'react-router-dom';
 import TextWorkspace from './TextWorkspace';
+import {FIELDS, DEFAULT_LOGO} from '../constants';
 
 const Input = (props) => {
     // defaultValue
     // value
     // label
+    // min - max
     return (
-        <div className="row">
-            <label htmlFor={props.type}>{props.label}: </label>
-            <input
-                type={props.type}
-                value={props.value}
-                onChange={props.onChange}
-            />
-        </div>
+        <React.Fragment>
+            <div className="row">
+                <label> {props.label} </label>
+            </div>
+            <div className="row" style={{marginBottom: '5px'}}>
+                <input
+                    type={props.type}
+                    value={props.value}
+                    min={(!!props.min && props.type === "number" && props.min) || undefined}
+                    max={(!!props.max && props.type === "number" && props.max) || undefined}
+                    onChange={(event) => {
+                        if (props.type !== "number")
+                            return props.onChange(event);
+                        let value = parseInt(event.target.value);
+                        if ((!props.min || props.min <= value)
+                            && (0 <= value)
+                            && (!props.max || props.max >= value)
+                        )
+                            props.onChange(event);
+                    }
+                    }
+                />
+            </div>
+        </React.Fragment>
     )
 };
 
@@ -48,18 +66,7 @@ class LogoEditor extends Component {
         }
     )
     render() {
-        let fields = [
-            {
-                label: "Text Color", 
-                name: "color",
-                type: "color"
-            },
-            {
-                label: "Font Size",
-                name: "fontSize",
-                type: "number"
-            },
-        ]
+        let fields = FIELDS;
         return (
             <div className="row">
                 <div className="col-4">
@@ -70,8 +77,8 @@ class LogoEditor extends Component {
                                     <Input
                                         value={this.state.logo[logoProperty.name]}
                                         onChange={this.handleStringPropChange(logoProperty.name)}
-                                        type={logoProperty.type}
                                         label={logoProperty.label}
+                                        type={logoProperty.type}
                                         key={logoProperty.name}
                                     />
                                 ) : (
@@ -81,6 +88,8 @@ class LogoEditor extends Component {
                                             type={logoProperty.type}
                                             label={logoProperty.label}
                                             key={logoProperty.name}
+                                            min={logoProperty.min ? logoProperty.min : undefined}
+                                            max={logoProperty.max ? logoProperty.max : undefined}
                                         />
                                     )
                             })
@@ -90,7 +99,8 @@ class LogoEditor extends Component {
                             <button
                                 type="submit"
                                 className="btn btn-success"
-                                onSubmit={() => this.props.submit(this.state.logo)}
+                                onClick={() => this.props.submit(this.state.logo)}
+                                disabled={!(this.state.logo.text)}
                             >
                                 Submit
                         </button>

@@ -1,18 +1,20 @@
 import gql from 'graphql-tag';
 
 export const GET_LOGO = gql`
-    query logo($logoId: String) {
-        logo(id: $logoId) {
-        _id
-        fontSize
-        text
-        borderColor
-        borderThickness
-        margin
-        padding
-        borderRadius
-        backgroundColor
-        color
+    query logo($id: String) {
+        logo(id: $id) {
+            id: _id
+            _id
+            fontSize
+            text
+            borderColor
+            borderThickness
+            margin
+            padding
+            borderRadius
+            backgroundColor
+            color
+            lastUpdate
         }
     }
 `;
@@ -29,13 +31,27 @@ export const GET_LOGOS = gql`
 
 export const ADD_LOGO = gql`
     mutation AddLogo(
-        $text: String!,
-        $color: String!,
-        $fontSize: Int!) {
+        $fontSize: Int!
+        $text: String!
+        $borderColor: String!
+        $borderThickness: Int!
+        $margin: Int!
+        $padding: Int!
+        $borderRadius: Int!
+        $backgroundColor: String!
+        $color: String!
+        ) {
         addLogo(
-            text: $text,
-            color: $color,
-            fontSize: $fontSize) {
+            text: $text
+            color: $color
+            borderColor: $borderColor
+            backgroundColor: $backgroundColor
+            borderRadius: $borderRadius
+            borderThickness: $borderThickness
+            fontSize: $fontSize
+            padding: $padding
+            margin: $margin
+            ) {
             _id
         }
     }
@@ -43,15 +59,29 @@ export const ADD_LOGO = gql`
 
 export const UPDATE_LOGO = gql`
     mutation updateLogo(
-        $id: String!,
-        $text: String!,
-        $color: String!,
-        $fontSize: Int!) {
+        $_id: String!,
+        $fontSize: Int!
+        $text: String!
+        $borderColor: String!
+        $borderThickness: Int!
+        $margin: Int!
+        $padding: Int!
+        $borderRadius: Int!
+        $backgroundColor: String!
+        $color: String!
+        ) {
             updateLogo(
-                id: $id,
-                text: $text,
-                color: $color,
-                fontSize: $fontSize) {
+                id: $_id,
+                text: $text
+                color: $color
+                borderColor: $borderColor
+                backgroundColor: $backgroundColor
+                borderRadius: $borderRadius
+                borderThickness: $borderThickness
+                fontSize: $fontSize
+                padding: $padding
+                margin: $margin
+                ) {
                     lastUpdate
                 }
         }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../App.css';
 import { Query, Mutation } from 'react-apollo';
 import {GET_LOGO, DELETE_LOGO} from '../queries';
+import {DEFAULT_LOGO, FIELDS} from '../constants';
 
 import TextWorkspace from './TextWorkspace';
 
@@ -10,7 +11,7 @@ class ViewLogoScreen extends Component {
 
     render() {
         return (
-            <Query pollInterval={500} query={GET_LOGO} variables={{ logoId: this.props.match.params.id }}>
+            <Query pollInterval={500} query={GET_LOGO} variables={{ id: this.props.match.params.id }}>
                 {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
@@ -29,12 +30,22 @@ class ViewLogoScreen extends Component {
                                         <div className="row">
                                             <div className="col-4">
                                                 <dl>
-                                                    <dt>Text:</dt>
-                                                    <dd>{data.logo.text}</dd>
-                                                    <dt>Color:</dt>
-                                                    <dd>{data.logo.color}</dd>
-                                                    <dt>Font Size:</dt>
-                                                    <dd>{data.logo.fontSize}</dd>
+                                                    {
+                                                        FIELDS.map(field =>
+                                                            (
+                                                                <React.Fragment>
+                                                                    <dt>{field.label}: </dt>
+                                                                    <dd
+                                                                    style={{
+                                                                        color: field.type === 'color' ? data.logo[field.name] : 'black'
+                                                                    }}
+                                                                    >
+                                                                        {data.logo[field.name]}
+                                                                    </dd>
+                                                                </React.Fragment>
+                                                            )
+                                                        )
+                                                    } 
                                                     <dt>Last Updated:</dt>
                                                     <dd>{data.logo.lastUpdate}</dd>
                                                 </dl>
@@ -55,9 +66,9 @@ class ViewLogoScreen extends Component {
                                                     )}
                                                 </Mutation>
                                             </div>
-                                            <div classname="col-8">
+                                            <div className="col-8">
                                                 <TextWorkspace
-                                                    logo={data.logo}
+                                                    logo={{...DEFAULT_LOGO, ...data.logo}}
                                                 />
                                             </div>
                                         </div>
