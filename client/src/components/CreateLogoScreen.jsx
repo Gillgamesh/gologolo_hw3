@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { Link } from 'react-router-dom';
-import {ADD_LOGO} from '../queries';
+import {ADD_LOGO, GET_LOGOS} from '../queries';
 import {DEFAULT_LOGO} from '../constants';
 import LogoEditor from'./LogoEditor';
 
@@ -17,6 +17,7 @@ class CreateLogoScreen extends Component {
                 onCompleted={(data) => this.props.history.push(
                     `/view/${data.addLogo._id}`
                 )}
+                refetchQueries={()=>[{query: GET_LOGOS}]}
             >
                 {(addLogo, { loading, error }) => (
                     <div className="container">

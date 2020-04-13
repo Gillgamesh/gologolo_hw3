@@ -1,5 +1,5 @@
 export const DEFAULT_LOGO = {
-    text: "fortnit2e",
+    text: "Default",
     color:"#000fff",
     borderColor: "#000080",
     backgroundColor: "#007000",

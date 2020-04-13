@@ -33,7 +33,7 @@ class ViewLogoScreen extends Component {
                                                     {
                                                         FIELDS.map(field =>
                                                             (
-                                                                <React.Fragment>
+                                                                <React.Fragment key={field.name}>
                                                                     <dt>{field.label}: </dt>
                                                                     <dd
                                                                     style={{
@@ -47,7 +47,7 @@ class ViewLogoScreen extends Component {
                                                         )
                                                     } 
                                                     <dt>Last Updated:</dt>
-                                                    <dd>{data.logo.lastUpdate}</dd>
+                                                    <dd>{(new Date(data.logo.lastUpdate)).toString()}</dd>
                                                 </dl>
                                                 <Mutation mutation={DELETE_LOGO} key={data.logo._id} onCompleted={() => this.props.history.push('/')}>
                                                     {(removeLogo, { loading, error }) => (
