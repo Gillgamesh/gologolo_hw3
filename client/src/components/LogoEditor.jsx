@@ -100,7 +100,7 @@ class LogoEditor extends Component {
                                 type="submit"
                                 className="btn btn-success"
                                 onClick={() => this.props.submit(this.state.logo)}
-                                disabled={!(this.state.logo.text)}
+                                disabled={!(this.state.logo.text && this.state.logo.text.trim())}
                             >
                                 Submit
                         </button>

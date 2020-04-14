@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
 import { Query, Mutation } from 'react-apollo';
-import {GET_LOGO, DELETE_LOGO} from '../queries';
+import {GET_LOGO, GET_LOGOS, DELETE_LOGO} from '../queries';
 import {DEFAULT_LOGO, FIELDS} from '../constants';
 
 import TextWorkspace from './TextWorkspace';
@@ -49,7 +49,16 @@ class ViewLogoScreen extends Component {
                                                     <dt>Last Updated:</dt>
                                                     <dd>{(new Date(data.logo.lastUpdate)).toString()}</dd>
                                                 </dl>
-                                                <Mutation mutation={DELETE_LOGO} key={data.logo._id} onCompleted={() => this.props.history.push('/')}>
+                                                <Mutation
+                                                    mutation={DELETE_LOGO}
+                                                    key={data.logo._id}
+                                                    onCompleted={() => this.props.history.push('/')}
+                                                    refetchQueries={() =>
+                                                        [
+                                                            { query: GET_LOGOS },
+                                                        ]
+                                                    }
+                                                >
                                                     {(removeLogo, { loading, error }) => (
                                                         <div>
                                                             <form
